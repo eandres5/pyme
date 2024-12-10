@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="Dashboard"
+             x:Class="pyme.Views.Dashboard">
+    <ContentPage.Content>
+
+        <ScrollView>
+            <StackLayout Padding="10">
+
+            <!-- Resumen Compras Mensual -->
+            <Label Text="Resumen Compras Mensual"
+                   TextColor="Black"
+                   FontSize="Large" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <StackLayout BindableLayout.ItemsSource="{Binding Compras}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                            <Frame Padding="10" Margin="5" BorderColor="Black">
+                            <StackLayout>
+                                <Label Text="{Binding TipoComprobante}" 
+                                       FontAttributes="Bold" 
+                                       FontSize="Medium"
+                                       TextColor="Black"/>
+                                <Label Text="{Binding Total, StringFormat='{0} $'}" 
+                                       FontSize="Small" 
+                                       TextColor="Black"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+
+            <!-- Espacio entre secciones -->
+            <BoxView HeightRequest="20"/>
+
+            <!-- Resumen Ventas Mensual -->
+            <Label Text="Resumen Ventas Mensual" 
+                   TextColor="Black"
+                   FontSize="Large" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <StackLayout BindableLayout.ItemsSource="{Binding Ventas}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                            <Frame Padding="10" Margin="5" BorderColor="Black">
+                            <StackLayout>
+                                <Label Text="{Binding TipoComprobante}" 
+                                       FontAttributes="Bold" 
+                                       FontSize="Medium"
+                                       TextColor="Black"/>
+                                <Label Text="{Binding Total, StringFormat='{0} $'}" 
+                                       FontSize="Small" 
+                                       TextColor="Black"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+
+            <!-- Espacio entre secciones -->
+            <BoxView HeightRequest="20"/>
+
+            <!-- Resumen Devoluciones Mensual -->
+            <Label Text="Resumen Devoluciones Mensual" 
+                   TextColor="Black"
+                   FontSize="Large" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <StackLayout BindableLayout.ItemsSource="{Binding Devoluciones}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                            <Frame Padding="10" Margin="5" BorderColor="Black">
+                            <StackLayout>
+                                <Label Text="{Binding TipoComprobante}" 
+                                       FontAttributes="Bold" 
+                                       FontSize="Medium"
+                                       TextColor="Black"/>
+                                <Label Text="{Binding Total, StringFormat='{0} $'}" 
+                                       FontSize="Small" 
+                                       TextColor="Black"/>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+
+        
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

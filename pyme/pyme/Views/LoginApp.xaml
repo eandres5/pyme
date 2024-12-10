@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:pyme.ViewModels"
+             x:Class="pyme.Views.LoginApp">
+    <ContentPage.BindingContext>
+        <local:LoginViewModel />
+    </ContentPage.BindingContext>
+    <StackLayout Padding="20">
+        <Label Text="Login" FontSize="24" HorizontalOptions="Center" />
+
+        <Entry Text="{Binding Identificacion}" Placeholder="Usuario" />
+        <Entry Text="{Binding Password}" Placeholder="Contraseña" IsPassword="True" />
+
+        <Button Text="Login" Command="{Binding LoginCommand}" />
+    </StackLayout>
+</ContentPage>
