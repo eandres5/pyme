@@ -8,7 +8,28 @@
         <ScrollView>
             <StackLayout Padding="10">
 
-            <!-- Resumen Compras Mensual -->
+            <Label Text="Stock Productos"
+                   TextColor="Black"
+                   FontSize="Large" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+                <Entry
+                Text="{Binding descripcionProducto}"
+                Placeholder="Descripcion Producto"
+                PlaceholderColor="Black"
+                TextColor="Black"
+                BackgroundColor="Transparent" >
+                        </Entry>
+
+                <Button Text="Descargar PDF"
+                    BackgroundColor="DarkRed"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="50"
+                    Command="{Binding CommandPdf}"/>
+
+
+                <!-- Resumen Compras Mensual -->
             <Label Text="Resumen Compras Mensual"
                    TextColor="Black"
                    FontSize="Large" 

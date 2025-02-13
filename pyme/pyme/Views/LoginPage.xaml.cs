@@ -24,7 +24,7 @@ namespace pyme.Views
                 (txtUser.Text == "admin") ? "admin" : "user"
             );
 
-            if (txtUser.Text == "administrador")
+            if (txtUser.Text == "administrador" && txtPassword.Text == "4dm1n1tr4d0r@")
             {
                 await Shell.Current.GoToAsync("//main");
             }

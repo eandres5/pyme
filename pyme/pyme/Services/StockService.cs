@@ -22,7 +22,7 @@ namespace pyme.Services
             var client = new HttpClient(handler);
 
             // Cambia para produccion
-            var response = await client.GetAsync("https://192.168.200.5:45455/api/Producto/getProducto/" + idProducto);
+            var response = await client.GetAsync("https://www.pymesecuador.org/api/Producto/getProducto/" + idProducto);
 
             if (response.IsSuccessStatusCode)
             {
@@ -46,12 +46,40 @@ namespace pyme.Services
             var client = new HttpClient(handler);
 
             // Cambia para produccion
-            var response = await client.GetAsync("https://192.168.200.5:45455/api/Producto/getBajoStock");
+            var response = await client.GetAsync("https://www.pymesecuador.org/api/Producto/getBajoStock");
 
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+            }
+            else
+            {
+                throw new Exception("Error al obtener datos del API");
+            }
+
+        }
+
+        public async Task<List<ProductoDTO>> GetProductoReporte(string descripcion)
+        {
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            };
+
+            var client = new HttpClient(handler);
+
+            // Cambia para producción
+            var response = await client.GetAsync("https://www.pymesecuador.org/api/Producto/getProductoUsuarioDescripcion/0/100/" + descripcion);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                // Deserializa en un objeto que contenga la lista de productos
+                var resultado = JsonConvert.DeserializeObject<ApiResponse>(json);
+
+                return resultado?.Items ?? new List<ProductoDTO>(); // Retorna la lista de productos o una lista vacía
             }
             else
             {

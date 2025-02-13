@@ -19,18 +19,10 @@
             <Label Text="{Binding Producto.precio}" TextColor="Black" />
 
             <Label Text="Stock:" TextColor="Black" FontAttributes="Bold"/>
-            <Entry
-                    Text="{Binding Producto.stock}"
-                    Placeholder="Stock"
-                    PlaceholderColor="Black"
-                    TextColor="Black"
-                    BackgroundColor="Transparent" >
-            </Entry>
-
+            <Label Text="{Binding Producto.stock}" TextColor="Black" />
 
             <StackLayout Orientation="Horizontal">
                 <Button Text="Cancelar" BackgroundColor="DarkRed" TextColor="White" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Guardar" BackgroundColor="DarkGreen" TextColor="White" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

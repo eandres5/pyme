@@ -11,7 +11,7 @@
 
             <Label Text="Nombre Producto:" TextColor="Black" FontAttributes="Bold"/>
             <Entry
-                Text="{Binding Producto.stock}"
+                Text="{Binding Producto.nombreProducto}"
                 Placeholder="Nombre Producto"
                 PlaceholderColor="Black"
                 TextColor="Black"
@@ -19,7 +19,7 @@
             </Entry>
             <Label Text="Descripción:" TextColor="Black" FontAttributes="Bold"/>
             <Entry
-                Text="{Binding Producto.stock}"
+                Text="{Binding Producto.descripcion}"
                 Placeholder="Descripción"
                 PlaceholderColor="Black"
                 TextColor="Black"
@@ -27,7 +27,7 @@
             </Entry>
             <Label Text="Categoria:" TextColor="Black" FontAttributes="Bold"/>
             <Entry
-                Text="{Binding Producto.stock}"
+                Text="{Binding Producto.nombreCategoria}"
                 Placeholder="Categoria"
                 PlaceholderColor="Black"
                 TextColor="Black"
@@ -43,12 +43,18 @@
             </Entry>
             <Label Text="Precio:" TextColor="Black" FontAttributes="Bold"/>
             <Entry
-                Text="{Binding Producto.stock}"
+                Text="{Binding Producto.precio}"
                 Placeholder="Precio"
                 PlaceholderColor="Black"
                 TextColor="Black"
                 BackgroundColor="Transparent" >
             </Entry>
+            <Label Text="Proveedor:" TextColor="Black" FontAttributes="Bold"/>
+            <Picker Title="Seleccionar Usuario" TextColor="Black"
+                ItemsSource="{Binding Usuarios}"
+                ItemDisplayBinding="{Binding nombres}"
+                SelectedItem="{Binding UsuarioSeleccionado}"
+                />
             <Label Text="La imagen QR se genera automaticamente al guardar el producto" TextColor="Black" FontAttributes="Bold"/>
             <StackLayout Orientation="Horizontal">
                 <Button Text="Cancelar" BackgroundColor="DarkRed" TextColor="White" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>

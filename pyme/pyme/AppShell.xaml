@@ -18,10 +18,6 @@
             <ShellContent 
                 ContentTemplate="{DataTemplate local:Dashboard}" />
         </Tab>
-        <Tab Title="Registro" Icon="icon_feed.png">
-            <ShellContent 
-                ContentTemplate="{DataTemplate local:Registro}" />
-        </Tab>
         <Tab Title="Stock" Icon="icon_feed.png">
             <ShellContent 
                 ContentTemplate="{DataTemplate local:Stock}" />

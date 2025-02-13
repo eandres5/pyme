@@ -10,12 +10,12 @@ namespace pyme.Views
 {
     public partial class Registro : ContentPage
     {
-        public Item Item { get; set; }
 
         public Registro()
         {
             InitializeComponent();
             BindingContext = new NewItemViewModel();
         }
+
     }
 }

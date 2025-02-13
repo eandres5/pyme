@@ -1,4 +1,5 @@
-﻿using pyme.ViewModels;
+﻿using pyme.Models;
+using pyme.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +34,6 @@ namespace pyme.Views
             base.OnDisappearing();
             MessagingCenter.Unsubscribe<ResumenComprobantesViewModel, string>(this, "MostrarAlerta");
         }
+
     }
 }

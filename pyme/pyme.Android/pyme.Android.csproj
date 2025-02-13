@@ -60,6 +60,7 @@
     <AndroidSigningStorePass>pyme2024</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>pymepassword</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>pyme2024</AndroidSigningKeyPass>
+    <MandroidI18n />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -73,6 +74,18 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="PDFsharp">
+      <Version>6.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="PDFsharp-MigraDoc">
+      <Version>6.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="PdfSharpCore">
+      <Version>1.3.65</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>9.0.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
@@ -117,6 +130,15 @@
       <Project>{76AD9436-06FA-4314-A4D9-99BAA00A7C8D}</Project>
       <Name>pyme</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\drawable\logo_licoreria.png" />
+    <Content Include="Resources\mipmap-anydpi-v26\iconpyme.xml" />
+    <Content Include="Resources\mipmap-hdpi\iconpyme.png" />
+    <Content Include="Resources\mipmap-mdpi\iconpyme.png" />
+    <Content Include="Resources\mipmap-xhdpi\iconpyme.png" />
+    <Content Include="Resources\mipmap-xxhdpi\iconpyme.png" />
+    <Content Include="Resources\mipmap-xxxhdpi\iconpyme.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

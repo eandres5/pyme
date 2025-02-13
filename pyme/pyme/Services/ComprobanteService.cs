@@ -28,7 +28,7 @@ namespace pyme.Services
             var client = new HttpClient(handler);
 
             // Cambia para produccion
-            var response = await client.GetAsync("https://192.168.200.5:45455/api/Comprobante/getResumenComprobantes/" + tipoTransaccion);
+            var response = await client.GetAsync("https://www.pymesecuador.org/api/Comprobante/getResumenComprobantes/" + tipoTransaccion);
 
             if (response.IsSuccessStatusCode)
             {
@@ -51,7 +51,7 @@ namespace pyme.Services
             var client = new HttpClient(handler);
 
             // Cambia para produccion
-            var response = await client.GetAsync("https://192.168.200.5:45455/api/Compra/getResumenCompras");
+            var response = await client.GetAsync("https://www.pymesecuador.org/api/Compra/getResumenCompras");
 
             if (response.IsSuccessStatusCode)
             {
