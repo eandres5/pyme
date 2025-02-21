@@ -15,6 +15,8 @@ namespace pyme.Views
         {
             InitializeComponent();
             BindingContext = new NewItemViewModel();
+            BindingContext = new ResumenComprobantesViewModel();
+
         }
 
     }

@@ -35,7 +35,7 @@ namespace pyme.Models
             this.nombreCategoria = nombreCategoria;
         }
 
-        public int idProducto { get; set; }
+        public int? idProducto { get; set; }
         public string nombreProducto { get; set; }
         public string descripcion { get; set; }
         public int? stock { get; set; }

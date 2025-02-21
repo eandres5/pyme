@@ -8,58 +8,27 @@
              ios:Page.UseSafeArea="true">
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
+            <Label Text="Stock Productos"
+       TextColor="Black"
+       FontSize="Large" 
+       FontAttributes="Bold" 
+       HorizontalOptions="Center" />
+            <Entry
+    Text="{Binding descripcionProducto}"
+    Placeholder="Descripcion Producto"
+    PlaceholderColor="Black"
+    TextColor="Black"
+    BackgroundColor="Transparent" >
+            </Entry>
 
-            <Label Text="Nombre Producto:" TextColor="Black" FontAttributes="Bold"/>
-            <Entry
-                Text="{Binding Producto.nombreProducto}"
-                Placeholder="Nombre Producto"
-                PlaceholderColor="Black"
-                TextColor="Black"
-                BackgroundColor="Transparent" >
-            </Entry>
-            <Label Text="Descripción:" TextColor="Black" FontAttributes="Bold"/>
-            <Entry
-                Text="{Binding Producto.descripcion}"
-                Placeholder="Descripción"
-                PlaceholderColor="Black"
-                TextColor="Black"
-                BackgroundColor="Transparent" >
-            </Entry>
-            <Label Text="Categoria:" TextColor="Black" FontAttributes="Bold"/>
-            <Entry
-                Text="{Binding Producto.nombreCategoria}"
-                Placeholder="Categoria"
-                PlaceholderColor="Black"
-                TextColor="Black"
-                BackgroundColor="Transparent" >
-            </Entry>
-            <Label Text="Cantidad:" TextColor="Black" FontAttributes="Bold"/>
-            <Entry
-                Text="{Binding Producto.stock}"
-                Placeholder="Cantidad"
-                PlaceholderColor="Black"
-                TextColor="Black"
-                BackgroundColor="Transparent" >
-            </Entry>
-            <Label Text="Precio:" TextColor="Black" FontAttributes="Bold"/>
-            <Entry
-                Text="{Binding Producto.precio}"
-                Placeholder="Precio"
-                PlaceholderColor="Black"
-                TextColor="Black"
-                BackgroundColor="Transparent" >
-            </Entry>
-            <Label Text="Proveedor:" TextColor="Black" FontAttributes="Bold"/>
-            <Picker Title="Seleccionar Usuario" TextColor="Black"
-                ItemsSource="{Binding Usuarios}"
-                ItemDisplayBinding="{Binding nombres}"
-                SelectedItem="{Binding UsuarioSeleccionado}"
-                />
-            <Label Text="La imagen QR se genera automaticamente al guardar el producto" TextColor="Black" FontAttributes="Bold"/>
-            <StackLayout Orientation="Horizontal">
-                <Button Text="Cancelar" BackgroundColor="DarkRed" TextColor="White" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                <Button Text="Guardar" BackgroundColor="DarkGreen" TextColor="White" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-            </StackLayout>
+            <Button Text="Descargar PDF"
+        BackgroundColor="DarkRed"
+        TextColor="White"
+        CornerRadius="10"
+        HeightRequest="50"
+        Command="{Binding CommandPdf}"/>
+
+
         </StackLayout>
     </ContentPage.Content>
     

@@ -1,117 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
              Title="Dashboard"
              x:Class="pyme.Views.Dashboard">
     <ContentPage.Content>
+        <StackLayout Padding="20">
+            <Label Text="Resumen de Comprobantes"
+               FontSize="Large"
+               HorizontalOptions="Center"/>
 
-        <ScrollView>
-            <StackLayout Padding="10">
-
-            <Label Text="Stock Productos"
-                   TextColor="Black"
-                   FontSize="Large" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center" />
-                <Entry
-                Text="{Binding descripcionProducto}"
-                Placeholder="Descripcion Producto"
-                PlaceholderColor="Black"
-                TextColor="Black"
-                BackgroundColor="Transparent" >
-                        </Entry>
-
-                <Button Text="Descargar PDF"
-                    BackgroundColor="DarkRed"
-                    TextColor="White"
-                    CornerRadius="10"
-                    HeightRequest="50"
-                    Command="{Binding CommandPdf}"/>
-
-
-                <!-- Resumen Compras Mensual -->
-            <Label Text="Resumen Compras Mensual"
-                   TextColor="Black"
-                   FontSize="Large" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center" />
-
-            <StackLayout BindableLayout.ItemsSource="{Binding Compras}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                            <Frame Padding="10" Margin="5" BorderColor="Black">
-                            <StackLayout>
-                                <Label Text="{Binding TipoComprobante}" 
-                                       FontAttributes="Bold" 
-                                       FontSize="Medium"
-                                       TextColor="Black"/>
-                                <Label Text="{Binding Total, StringFormat='{0} $'}" 
-                                       FontSize="Small" 
-                                       TextColor="Black"/>
-                            </StackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
-
-            <!-- Espacio entre secciones -->
-            <BoxView HeightRequest="20"/>
-
-            <!-- Resumen Ventas Mensual -->
-            <Label Text="Resumen Ventas Mensual" 
-                   TextColor="Black"
-                   FontSize="Large" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center" />
-
-            <StackLayout BindableLayout.ItemsSource="{Binding Ventas}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                            <Frame Padding="10" Margin="5" BorderColor="Black">
-                            <StackLayout>
-                                <Label Text="{Binding TipoComprobante}" 
-                                       FontAttributes="Bold" 
-                                       FontSize="Medium"
-                                       TextColor="Black"/>
-                                <Label Text="{Binding Total, StringFormat='{0} $'}" 
-                                       FontSize="Small" 
-                                       TextColor="Black"/>
-                            </StackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
-
-            <!-- Espacio entre secciones -->
-            <BoxView HeightRequest="20"/>
-
-            <!-- Resumen Devoluciones Mensual -->
-            <Label Text="Resumen Devoluciones Mensual" 
-                   TextColor="Black"
-                   FontSize="Large" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center" />
-
-            <StackLayout BindableLayout.ItemsSource="{Binding Devoluciones}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                            <Frame Padding="10" Margin="5" BorderColor="Black">
-                            <StackLayout>
-                                <Label Text="{Binding TipoComprobante}" 
-                                       FontAttributes="Bold" 
-                                       FontSize="Medium"
-                                       TextColor="Black"/>
-                                <Label Text="{Binding Total, StringFormat='{0} $'}" 
-                                       FontSize="Small" 
-                                       TextColor="Black"/>
-                            </StackLayout>
-                        </Frame>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
-
-        
-            </StackLayout>
-        </ScrollView>
+            <microcharts:ChartView x:Name="chartView"
+                               HeightRequest="200"
+                               VerticalOptions="FillAndExpand"/>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

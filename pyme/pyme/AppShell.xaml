@@ -16,7 +16,11 @@
     <TabBar Route="main">
         <Tab Title="Dashboard" Icon="icon_feed.png">
             <ShellContent 
-                ContentTemplate="{DataTemplate local:Dashboard}" />
+        ContentTemplate="{DataTemplate local:Dashboard}" />
+        </Tab>
+        <Tab Title="Reporte" Icon="icon_feed.png">
+            <ShellContent 
+            ContentTemplate="{DataTemplate local:Registro}" />
         </Tab>
         <Tab Title="Stock" Icon="icon_feed.png">
             <ShellContent 

@@ -11,6 +11,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
+using Microcharts;
+using SkiaSharp;
 
 namespace pyme.ViewModels
 {
@@ -26,26 +28,16 @@ namespace pyme.ViewModels
         public string descripcionProducto { get; set; }
         public Command CommandPdf { get; }
 
-
-        public ObservableCollection<ProductoDTO> ProductosReporte
+        private List<ChartEntry> _chartEntries;
+        public List<ChartEntry> ChartEntries
         {
-            get => _productosReporte;
+            get => _chartEntries;
             set
             {
-                _productosReporte = value;
+                _chartEntries = value;
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<ProductoDTO> Productos
-        {
-            get => _productos;
-            set
-            {
-                _productos = value;
-                OnPropertyChanged();
-            }
-        }
-
 
         public ObservableCollection<ResumenComprobanteResponse> Compras
         {
@@ -77,6 +69,25 @@ namespace pyme.ViewModels
             }
         }
 
+        public ObservableCollection<ProductoDTO> ProductosReporte
+        {
+            get => _productosReporte;
+            set
+            {
+                _productosReporte = value;
+                OnPropertyChanged();
+            }
+        }
+        public ObservableCollection<ProductoDTO> Productos
+        {
+            get => _productos;
+            set
+            {
+                _productos = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ResumenComprobantesViewModel()
         {
             _comprobanteService = new ComprobanteService();
@@ -86,13 +97,16 @@ namespace pyme.ViewModels
             CargarBajoStock();
         }
 
-        private async void CargarDatos()
+        public async void CargarDatos()
         {
             try
             {
                 Compras = new ObservableCollection<ResumenComprobanteResponse>(await _comprobanteService.GetResumenCompras()); 
                 Ventas = new ObservableCollection<ResumenComprobanteResponse>(await _comprobanteService.GetResumenComprobantes("VENTA"));
                 Devoluciones = new ObservableCollection<ResumenComprobanteResponse>(await _comprobanteService.GetResumenComprobantes("DEVOLUCION"));
+
+                CargarGrafico();
+
             }
             catch (Exception ex)
             {
@@ -125,7 +139,28 @@ namespace pyme.ViewModels
         private async void OnDownloadPdfClicked()
         {
             List<ProductoDTO> productos = await CargarProductosReporte();
-            await GenerarPDF(productos);
+            //await GenerarPDF(productos);
+
+            var pdfFilePath = await GenerarPDF(productos);
+
+            if (!string.IsNullOrEmpty(pdfFilePath) && File.Exists(pdfFilePath))
+            {
+                try
+                {
+                    await Launcher.OpenAsync(new OpenFileRequest
+                    {
+                        File = new ReadOnlyFile(pdfFilePath)
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al abrir el PDF: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("El PDF no se generó correctamente o no se encuentra.");
+            }
         }
 
         private async Task<List<ProductoDTO>> CargarProductosReporte()
@@ -146,50 +181,27 @@ namespace pyme.ViewModels
         {
             try
             {
-                if (productos == null || productos.Count == 0)
-                    throw new Exception("La lista de productos está vacía o es nula.");
-
+                // Crear documento PDF
                 PdfDocument documento = new PdfDocument();
                 documento.Info.Title = "Reporte de Productos";
 
+                // Agregar una página al documento
                 PdfPage pagina = documento.AddPage();
                 if (pagina == null) throw new Exception("No se pudo crear la página en el documento PDF.");
 
-                XGraphics gfx = XGraphics.FromPdfPage(pagina);
-                if (gfx == null) throw new Exception("No se pudo crear el objeto gráfico para la página.");
-
-                // Crear fuentes usando los estilos correctos
-                XFont fontRegular = new XFont("Arial", 12); // Estilo regular (ningún estilo adicional)
-                XFont fontBold = new XFont("Arial", 16); // Estilo negrita
-
-                int yPoint = 40;
-
-                // Título (usando la fuente en negrita)
-                gfx.DrawString("Reporte de Productos", fontBold, XBrushes.Black, new XPoint(40, yPoint));
-                yPoint += 30;
-
-                // Dibujar encabezados (usando la fuente regular)
-                gfx.DrawString("Nombre", fontRegular, XBrushes.Black, new XPoint(40, yPoint));
-                gfx.DrawString("Descripción", fontRegular, XBrushes.Black, new XPoint(200, yPoint));
-                gfx.DrawString("Precio", fontRegular, XBrushes.Black, new XPoint(400, yPoint));
-                gfx.DrawString("Stock", fontRegular, XBrushes.Black, new XPoint(500, yPoint));
-                yPoint += 20;
-
-                // Dibujar productos (usando la fuente regular)
-                foreach (var producto in productos)
-                {
-                    gfx.DrawString(producto.nombreProducto ?? "N/A", fontRegular, XBrushes.Black, new XPoint(40, yPoint));
-                    gfx.DrawString(producto.descripcion ?? "N/A", fontRegular, XBrushes.Black, new XPoint(200, yPoint));
-                    gfx.DrawString($"${producto.precio:0.00}", fontRegular, XBrushes.Black, new XPoint(400, yPoint));
-                    gfx.DrawString(producto.stock.ToString(), fontRegular, XBrushes.Black, new XPoint(500, yPoint));
-                    yPoint += 20;
-                }
-
+                // Definir la ruta donde se guardará el PDF
                 string fileName = Path.Combine(FileSystem.AppDataDirectory, "Reporte_Productos.pdf");
-                using (MemoryStream stream = new MemoryStream())
+
+                // Guardar directamente el archivo en el sistema de archivos
+                documento.Save(fileName);
+
+                if (File.Exists(fileName))
                 {
-                    documento.Save(stream, false);
-                    File.WriteAllBytes(fileName, stream.ToArray());
+                    Console.WriteLine($"PDF generado con éxito en: {fileName}");
+                }
+                else
+                {
+                    Console.WriteLine("Error: El archivo PDF no se generó.");
                 }
 
                 return fileName;
@@ -200,6 +212,53 @@ namespace pyme.ViewModels
                 return null;
             }
         }
+        private void CargarGrafico()
+        {
+            float totalVentas = CalcularTotal(Ventas);
+            float totalDevoluciones = CalcularTotal(Devoluciones);
+            float totalCompras = CalcularTotal(Compras);
 
+            ChartEntries = new List<ChartEntry>
+    {
+        new ChartEntry(totalVentas)
+        {
+            Label = "Ventas",
+            ValueLabel = totalVentas.ToString("N2"), // Formato con 2 decimales
+            Color = SKColor.Parse("#2ecc71") // Verde
+        },
+        new ChartEntry(totalDevoluciones)
+        {
+            Label = "Devoluciones",
+            ValueLabel = totalDevoluciones.ToString("N2"),
+            Color = SKColor.Parse("#e74c3c") // Rojo
+        },
+        new ChartEntry(totalCompras)
+        {
+            Label = "Compras",
+            ValueLabel = totalCompras.ToString("N2"),
+            Color = SKColor.Parse("#3498db") // Azul
+        }
+    };
+
+            OnPropertyChanged(nameof(ChartEntries));
+        }
+
+        // Método modificado para aceptar IEnumerable en lugar de List
+        private float CalcularTotal(IEnumerable<ResumenComprobanteResponse> lista)
+        {
+            if (lista == null || !lista.Any())
+                return 0;
+
+            var culture = new System.Globalization.CultureInfo("en-US"); // Usa cultura que tenga punto como separador decimal
+
+            return lista.Sum(x => {
+                // Convierte el total a float usando el punto como separador decimal
+                if (float.TryParse(x.Total.ToString(), System.Globalization.NumberStyles.Any, culture, out float total))
+                {
+                    return (float)Math.Floor(total * 100) / 100; // Truncar a dos decimales
+                }
+                return 0;
+            });
+        }
     }
 }
