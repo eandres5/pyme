@@ -9,10 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 using Microcharts;
 using SkiaSharp;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.Kernel.Colors;
 
 namespace pyme.ViewModels
 {
@@ -139,7 +142,12 @@ namespace pyme.ViewModels
         private async void OnDownloadPdfClicked()
         {
             List<ProductoDTO> productos = await CargarProductosReporte();
-            //await GenerarPDF(productos);
+
+            // Validar si hay productos en la lista
+            if (productos == null || productos.Count == 0)
+            {
+                return;
+            }
 
             var pdfFilePath = await GenerarPDF(productos);
 
@@ -181,37 +189,166 @@ namespace pyme.ViewModels
         {
             try
             {
-                // Crear documento PDF
-                PdfDocument documento = new PdfDocument();
-                documento.Info.Title = "Reporte de Productos";
+                // Obtener la ruta donde se guardará el PDF
+                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Reporte_Productos.pdf");
 
-                // Agregar una página al documento
-                PdfPage pagina = documento.AddPage();
-                if (pagina == null) throw new Exception("No se pudo crear la página en el documento PDF.");
-
-                // Definir la ruta donde se guardará el PDF
-                string fileName = Path.Combine(FileSystem.AppDataDirectory, "Reporte_Productos.pdf");
-
-                // Guardar directamente el archivo en el sistema de archivos
-                documento.Save(fileName);
-
-                if (File.Exists(fileName))
+                // Crear un archivo PDF
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
                 {
-                    Console.WriteLine($"PDF generado con éxito en: {fileName}");
-                }
-                else
-                {
-                    Console.WriteLine("Error: El archivo PDF no se generó.");
+                    PdfWriter writer = new PdfWriter(stream);
+                    PdfDocument pdf = new PdfDocument(writer);
+                    Document document = new Document(pdf);
+
+                    // Agregar título
+                    Paragraph title = new Paragraph("Reporte de Productos")
+                        .SetFontSize(16)
+                        .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
+                    document.Add(title);
+
+                    // Agregar fecha actual
+                    string fechaActual = DateTime.Now.ToString("dd/MM/yyyy");
+                    Paragraph fecha = new Paragraph($"Fecha: {fechaActual}")
+                        .SetFontSize(12)
+                        .SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT);
+                    document.Add(fecha);
+
+                    // Espacio antes de la tabla
+                    document.Add(new Paragraph("\n"));
+
+                    // Crear tabla con 4 columnas
+                    Table table = new Table(4).UseAllAvailableWidth();
+
+                    // Definir encabezados
+                    string[] headers = { "Nombre del Producto", "Descripción", "Stock", "Precio" };
+                    foreach (var header in headers)
+                    {
+                        // Referencia explícita a la clase de iTextSharp
+                        iText.Layout.Element.Cell cell = new iText.Layout.Element.Cell()
+                            .Add(new Paragraph(header))
+                            .SetBackgroundColor(ColorConstants.LIGHT_GRAY)
+                            .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
+                        table.AddHeaderCell(cell);
+                    }
+
+                    // Agregar los datos de la lista
+                    foreach (var producto in productos)
+                    {
+                        table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(producto.nombreProducto)).SetTextAlignment(iText.Layout.Properties.TextAlignment.LEFT));
+                        table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(producto.descripcion)).SetTextAlignment(iText.Layout.Properties.TextAlignment.LEFT));
+                        table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(producto.stock?.ToString() ?? "0")).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER));
+                        table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(producto.precio?.ToString("C2") ?? "$0.00")).SetTextAlignment(iText.Layout.Properties.TextAlignment.RIGHT));
+                    }
+
+                    // Agregar tabla al documento
+                    document.Add(table);
+
+                    // Cerrar el documento
+                    document.Close();
                 }
 
-                return fileName;
+                // Retornar la ruta del archivo generado
+                return filePath;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error generando PDF: {ex.Message}");
+                Console.WriteLine($"Error al generar el PDF: {ex.Message}");
                 return null;
             }
         }
+
+        //public async Task<string> GenerarPDF(List<ProductoDTO> productos)
+        //{
+        //    try
+        //    {
+        //         Crear un nuevo documento PDF
+        //        PdfDocument documento = new PdfDocument();
+
+        //         Agregar una página al documento
+        //        PdfPage pagina = documento.Pages.Add();
+
+        //         Crear un objeto gráfico para escribir en la página
+        //        PdfGraphics graphics = pagina.Graphics;
+
+        //         Establecer fuentes para el texto
+        //        PdfFont titleFont = new PdfStandardFont(PdfFontFamily.Helvetica, 16, PdfFontStyle.Bold);
+        //        PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 12);
+
+        //         Obtener la fecha actual del sistema en formato dd/MM/yyyy
+        //        string fechaActual = DateTime.Now.ToString("dd/MM/yyyy");
+
+        //         Escribir un encabezado
+        //        graphics.DrawString("Reporte de Productos", titleFont, PdfBrushes.Black, new Syncfusion.Drawing.PointF(180, 30));
+
+        //         Escribir la fecha actual debajo del título
+        //        graphics.DrawString($"Fecha: {fechaActual}", font, PdfBrushes.Black, new Syncfusion.Drawing.PointF(400, 60));
+
+        //         Crear un objeto PdfGrid para mostrar los datos en forma de tabla
+        //        PdfGrid grid = new PdfGrid();
+
+        //         Definir solo las columnas necesarias
+        //        grid.Columns.Add(4); // 4 columnas: Nombre, Descripción, Stock, Precio
+
+        //         Crear la fila de encabezado
+        //        PdfGridRow headerRow = grid.Headers.Add(1)[0];
+        //        headerRow.Cells[0].Value = "Nombre del Producto";
+        //        headerRow.Cells[1].Value = "Descripción";
+        //        headerRow.Cells[2].Value = "Stock";
+        //        headerRow.Cells[3].Value = "Precio";
+
+        //         Aplicar estilos al encabezado
+        //        foreach (PdfGridCell cell in headerRow.Cells)
+        //        {
+        //            cell.StringFormat = new PdfStringFormat(PdfTextAlignment.Center, PdfVerticalAlignment.Middle);
+        //            cell.Style.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 12, PdfFontStyle.Bold);
+        //            cell.Style.BackgroundBrush = PdfBrushes.LightGray;
+        //        }
+
+        //         Agregar filas con los datos filtrados
+        //        foreach (var producto in productos)
+        //        {
+        //            PdfGridRow row = grid.Rows.Add();
+        //            row.Cells[0].Value = producto.nombreProducto;
+        //            row.Cells[1].Value = producto.descripcion;
+        //            row.Cells[2].Value = producto.stock?.ToString();
+        //            row.Cells[3].Value = producto.precio?.ToString("C2"); // Formato de moneda
+        //        }
+
+        //         Ajustar tamaño de las celdas y aplicar estilo a las filas
+        //        grid.Style.Font = font;
+        //        grid.Style.CellPadding = new PdfPaddings(5, 5, 5, 5);
+
+        //         Ajustar la tabla para que no se corte en la parte final
+        //        PdfLayoutFormat layoutFormat = new PdfLayoutFormat();
+        //        layoutFormat.Layout = PdfLayoutType.Paginate;
+
+        //         Dibujar la tabla en la página y permitir paginación automática
+        //        PdfLayoutResult result = grid.Draw(pagina, new Syncfusion.Drawing.PointF(30, 90), layoutFormat);
+
+        //         Guardar el documento en un MemoryStream en lugar de un archivo
+        //        using (MemoryStream ms = new MemoryStream())
+        //        {
+        //            documento.Save(ms);
+
+        //             Obtener la ruta del archivo para guardarlo físicamente
+        //            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Reporte_Productos.pdf");
+
+        //             Guardar el contenido del MemoryStream en un archivo
+        //            File.WriteAllBytes(filePath, ms.ToArray());
+
+        //             Cerrar el documento
+        //            documento.Close(true);
+
+        //             Devolver la ruta del archivo
+        //            return filePath;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error al generar el PDF: {ex.Message}");
+        //        return null;
+        //    }
+        //}
+
         private void CargarGrafico()
         {
             float totalVentas = CalcularTotal(Ventas);

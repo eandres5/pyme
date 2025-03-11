@@ -1,4 +1,6 @@
-﻿using pyme.Services;
+﻿using PdfSharp.Fonts;
+using pyme.Services;
+using pyme.ViewModels;
 using pyme.Views;
 using System;
 using Xamarin.Forms;
